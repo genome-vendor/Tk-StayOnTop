@@ -1,0 +1,13 @@
+Source: lib-tk-stayontop-perl
+Section: science
+Priority: optional
+Maintainer: The Genome Institute <gmt@genome.wustl.edu>
+Uploaders: Adam Coffman <acoffman@genome.wustl.edu>
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.9.2
+Homepage: http://search.cpan.org/~gbrock/Tk-StayOnTop-0.12/lib/Tk/StayOnTop.pm
+
+Package: lib-tk-stayontop-perl
+Architecture: amd64
+Depends: libtime-hires-perl, libgd-gd2-perl, libtk-perl
+Description: Adds methods to the Tk::Toplevel base class so that a window can stay on top off all other windows.
