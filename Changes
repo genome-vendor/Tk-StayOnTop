@@ -1,5 +1,7 @@
 Revision history for Perl extension Tk::StayOnTop.
 
+0.13 2012/05/03 Remove Switch dependency
+
 0.12 2006/02/02 Minor test/doc improvements as suggested by CPANTS
 
 0.11 2004/04/27 Major reworking according to suggestions from Slaven Rezic.

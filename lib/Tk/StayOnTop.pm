@@ -1,5 +1,6 @@
 package Tk::StayOnTop;
 
+
 our $VERSION = 0.12;
 
 #==============================================================================#
@@ -31,7 +32,6 @@ package Tk::Toplevel;
 
 use strict;
 use warnings;
-use Switch;
 use Carp;
 
 my ($method,$win32_winpos,$repeat_id); # Globals
@@ -96,25 +96,24 @@ sub stayOnTop {
 	$method ||=  $obj->get_method;
 	#warn "Chosen method is $method";
 
-	switch ($method) {
 
-		case METHOD_WINAPI {
+		if ($method eq METHOD_WINAPI) {
 			$obj->update;
 			# HWND_TOPMOST (-1) and SWP_NOSIZE+SWP_NOMOVE (3)
 			$win32_winpos->Call(hex($obj->frame()),-1,0,0,0,0,3);
 		}
 
-		case METHOD_ATTRIB {
+		elsif ($method eq METHOD_ATTRIB) {
 			$obj->attributes(-topmost => 1);
 		}
 
-		case METHOD_WMSTATE {
+		elsif ($method eq METHOD_WMSTATE) {
     			my($wrapper) = $obj->toplevel->wrapper;
 			$obj->property('set', '_NET_WM_STATE', "ATOM", 32,
 				["_NET_WM_STATE_STAYS_ON_TOP"], $wrapper);
 		}
 
-		case METHOD_SIMPLE {
+		elsif ($method eq METHOD_SIMPLE) {
 			my $stay_above_after;
 			$obj->bind("<Visibility>" => sub {
 				if ($repeat_id) {
@@ -130,10 +129,9 @@ sub stayOnTop {
 
 		}
 
-		else {
-			die "Invalid method type [$method]";	
+        else {
+			die "Invalid method type [$method]";
 		}
-	}
 }
 
 #==============================================================================#
@@ -149,32 +147,30 @@ sub dontStayOnTop {
 
 	$method ||=  $obj->get_method;
 
-	switch ($method) {
 
-		case METHOD_WINAPI {
+		if ($method eq METHOD_WINAPI) {
 			$obj->update;
 			# HWND_NOTOPMOST (-2) and SWP_NOSIZE+SWP_NOMOVE (3)
 			$win32_winpos->Call(hex($obj->frame()),-2,0,0,0,0,3);
 		}
 
-		case METHOD_ATTRIB {
+		elsif ($method eq METHOD_ATTRIB) {
 			$obj->attributes(-topmost => 0);
 		}
 
-		case METHOD_WMSTATE {
+		elsif ($method eq METHOD_WMSTATE) {
     			my($wrapper) = $obj->toplevel->wrapper;
 			$obj->property('delete', "_NET_WM_STATE_STAYS_ON_TOP", $wrapper);
 		}
 
-		case METHOD_SIMPLE {
+        elsif ($method eq METHOD_SIMPLE) {
 			$obj->afterCancel($repeat_id);
 			$repeat_id = undef;
 		}
 
-		else {
-			die "Invalid method type [$method]";	
+        else {
+			die "Invalid method type [$method]";
 		}
-	}
 
 }
 
@@ -197,13 +193,13 @@ can be split between Microsoft Windows and X-Windows:
 Perl Tk Version 804.027 and newer support the "-toplevel => 1" attribute. This
 will be used if possible.
 
-On older Perl Tk versions, the module will search for the Win32::API module and 
+On older Perl Tk versions, the module will search for the Win32::API module and
 use direct API calls to the OS.
 
 =item X-Windows
 
-For newer X window managers (Gnome, myabe KDE) it will try to set the 
-NET_WM_STATE_STAYS_ON_TOP property of the window. 
+For newer X window managers (Gnome, myabe KDE) it will try to set the
+NET_WM_STATE_STAYS_ON_TOP property of the window.
 
 If this is not implemented, it will just try to the raise window every time
 it's covered. This could cause problems if you have two windows competing to
